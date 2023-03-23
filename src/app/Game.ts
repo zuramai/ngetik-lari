@@ -1,10 +1,12 @@
 import type { GameMap } from "./GameMap"
+import { Player } from "./Player"
 import { MapDust } from "./maps/MapDust"
 
 export class Game {
     canvas: HTMLCanvasElement
     map: GameMap | null = null
     ctx: CanvasRenderingContext2D
+    player: Player|null = null
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas 
@@ -18,6 +20,7 @@ export class Game {
     }
 
     start() {
+        this.player = new Player(this.map?.startAt!)
         this.draw()
     }
 
@@ -26,8 +29,7 @@ export class Game {
     }
 
     draw() {
-        console.log(this.map?.map);
-        
         this.map?.draw(this.ctx)
+        this.player!.draw(this.ctx);
     }
 }

@@ -37,7 +37,4 @@ onMounted(() => {
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
-.game-area {
-  background-color: rgba(243, 178, 93, 0.37);
-}
 </style>

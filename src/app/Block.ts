@@ -9,9 +9,10 @@ const blockColors = {
 
 export class Block {
     content: BlockContent 
+    currentlyTyping = ""
     position: Position
-    width = 80
-    height = 80
+    width = 91.42
+    height = 91.42
 
     constructor(content: BlockContent, position: Position) {
         this.content = content
@@ -28,8 +29,8 @@ export class Block {
         console.log(this.content === 0);
         ctx.fillStyle = blockColors[this.content === 0 ? 0 : 'empty' ]
 
-        const blockX = this.position.row * this.width 
-        const blockY = this.position.col * this.height
+        const blockY = this.position.row * this.width 
+        const blockX = this.position.col * this.height
         
         ctx.rect(blockX, blockY, this.width, this.height)
         ctx.fill()
