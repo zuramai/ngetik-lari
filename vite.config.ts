@@ -12,7 +12,7 @@ export default defineConfig({
     vue(),
     UnoCSS({
       shortcuts: {
-        'btn': 'block px-3 py-4 text-xl border-2 border-black border-solid rounded-md cursor-pointer',
+        'btn': 'block px-3 py-4 text-xl border-2 border-amber-500 border-solid rounded-md cursor-pointer bg-gradient-to-b from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-500 hover:decoration-none text-dark-500',
       },
       presets: [
         presetUno(),
