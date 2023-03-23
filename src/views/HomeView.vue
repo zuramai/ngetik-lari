@@ -10,7 +10,7 @@ const withHomeScreen = false
 
 onMounted(() => {
   game.value = new Game(canvas.value)
-  if(!withHomeScreen) game.value.start()
+  // if(!withHomeScreen) game.value.start()
 })
 
 

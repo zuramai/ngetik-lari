@@ -1,3 +1,4 @@
+import type { Point } from "./types/Map"
 import type { Position } from "./types/Player"
 
 export type BlockContent = string | 0 | 'player' | 'musuh'
@@ -23,14 +24,21 @@ export class Block {
         return this.content === 0
     }
 
-    draw(ctx: CanvasRenderingContext2D) {
+    getX() {
+        return this.position.col * this.height
+    }
+
+    getY() {
+        return this.position.row * this.width 
+    }
+
+    draw(ctx: CanvasRenderingContext2D, cameraPosition: Point) {
         ctx.beginPath()
         
-        console.log(this.content === 0);
         ctx.fillStyle = blockColors[this.content === 0 ? 0 : 'empty' ]
 
-        const blockY = this.position.row * this.width 
-        const blockX = this.position.col * this.height
+        const blockY = this.getY() + cameraPosition.y
+        const blockX = this.getX() + cameraPosition.x
         
         ctx.rect(blockX, blockY, this.width, this.height)
         ctx.fill()
@@ -43,6 +51,6 @@ export class Block {
         ctx.font = "13px arial"
         ctx.fillStyle = 'white'
         ctx.textAlign = 'center'
-        if(this.content !== 0) ctx.fillText(this.content.toString(), blockX + this.width/2, blockY + this.height / 2)
+        if(this.content) ctx.fillText(this.content.toString(), blockX + this.width/2, blockY + this.height / 2)
     }
 }

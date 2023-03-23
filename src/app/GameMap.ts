@@ -1,4 +1,4 @@
-import type { MapMatrix } from "./types/Map";
+import type { MapMatrix, Point } from "./types/Map";
 import type { GameMapInterface } from '@/app/types/Map'
 import type { Position } from "./types/Player";
 
@@ -12,10 +12,10 @@ export class GameMap implements GameMapInterface {
         this.map = map 
     }
 
-    draw(ctx: CanvasRenderingContext2D) {
+    draw(ctx: CanvasRenderingContext2D, cameraPosition: Point) {
         this.map.forEach((row) => {
             row.forEach((block) => {
-                block.draw(ctx)
+                block.draw(ctx, cameraPosition)
             });
         })
     }
