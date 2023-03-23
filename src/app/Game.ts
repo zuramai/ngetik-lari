@@ -18,7 +18,7 @@ export class Game {
     }
 
     start() {
-        
+        this.draw()
     }
 
     gameover() {
@@ -26,6 +26,8 @@ export class Game {
     }
 
     draw() {
+        console.log(this.map?.map);
+        
         this.map?.draw(this.ctx)
     }
 }
