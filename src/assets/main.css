@@ -1,0 +1,30 @@
+@import './base.css';
+#app {
+    display: flex;
+    align-items: center;
+    min-height: 100vh;
+    padding: 3rem;
+}
+body  {
+    font-family: 'Patua One';
+}
+
+.text-cursive {
+    font-family: 'Titan One';
+}
+
+body {
+    background: linear-gradient(to right, bisque, rgb(240, 199, 189));
+}
+
+a {
+    text-decoration: none;
+    color: rgb(90, 69, 69)
+}
+a:hover {
+    text-decoration: underline;
+}
+.container-sm {
+    width: 640px;
+    height: 640px;
+}
