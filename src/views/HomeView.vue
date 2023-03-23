@@ -6,8 +6,11 @@ import { onMounted, ref, watch } from 'vue';
 const canvas = ref()
 const game = ref<Game>()
 
+const withHomeScreen = false
+
 onMounted(() => {
   game.value = new Game(canvas.value)
+  if(!withHomeScreen) game.value.start()
 })
 
 
@@ -17,7 +20,7 @@ onMounted(() => {
     <div class="game-area relative">
       <canvas id="canvas" ref="canvas" width="640" height="640"></canvas>
       
-      <div class="game-home absolute inset-0 text-center flex justify-center flex-col w-[400px] mx-auto">
+      <div v-if="withHomeScreen" class="game-home absolute inset-0 text-center flex justify-center flex-col w-[400px] mx-auto">
         <GameLogo/>
         <div class="menu">
             <button class="btn w-full mb-3">Play</button>
