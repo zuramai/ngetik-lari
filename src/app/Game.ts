@@ -20,7 +20,7 @@ export class Game {
         this.canvas = canvas 
         this.ctx = canvas.getContext('2d')!
         this.chooseMap()
-        this.start()
+        // this.start()
         
         window.addEventListener('keydown', e => this.events(e))
     }
@@ -148,6 +148,10 @@ export class Game {
             this.nextBlocks.forEach(b => b.currentlyTyping = '')
             this.nextBlocks = []
         }
+    }
+
+    restart() {
+        this.start()
     }
 
     movePlayerTo(position: Position) {

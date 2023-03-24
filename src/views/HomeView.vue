@@ -7,7 +7,7 @@ import { onMounted, ref, watch } from 'vue';
 const canvas = ref()
 const game = ref<Game>()
 
-const withHomeScreen = false
+const showHomeScreen = ref(true)
 const finishTime = ref("00:00")
 const finishModalOpen = ref(false)
 
@@ -23,6 +23,15 @@ onMounted(() => {
   // if(!withHomeScreen) game.value.start()
 })
 
+const restart = () => {
+  game.value?.restart()
+  finishModalOpen.value = false 
+}
+
+const startGame = () => {
+  game.value?.start()
+  showHomeScreen.value = false
+}
 
 </script>
 <template>
@@ -30,11 +39,14 @@ onMounted(() => {
     <div class="game-area relative">
       <canvas id="canvas" ref="canvas" width="640" height="640"></canvas>
       
-      <div v-if="withHomeScreen" class="game-home absolute inset-0 text-center flex justify-center flex-col w-[400px] mx-auto">
-        <GameLogo/>
-        <div class="menu">
-            <button class="btn w-full mb-3">Play</button>
-            <router-link class="btn" to="/leaderboard" role="button">Leaderboard</router-link>
+      <div v-if="showHomeScreen" class="game-home absolute inset-0 text-center flex items-center w-full">
+        <div class="game-home__content w-[400px] mx-auto flex flex-col">
+          <GameLogo/>
+          <div class="menu">
+              <button class="btn w-full mb-3" @click="startGame">Play</button>
+              <router-link class="btn" to="/leaderboard" role="button">Leaderboard</router-link>
+          </div>
+          <p class="self-end mt-5">Created by <a href="https://saugi.me" target="_blank" class="text-link">Saugi</a></p>
         </div>
       </div>
     </div>
@@ -44,7 +56,7 @@ onMounted(() => {
 
       <div class="buttons flex gap-3 mt-5">
         <button class="btn text-white flex-1">Save Score</button>
-        <button class="btn btn-blue text-white flex-1">Try again</button>
+        <button class="btn btn-blue text-white flex-1" @click="restart">Restart</button>
       </div>
     </ModalDialog>
   </main>
@@ -55,5 +67,8 @@ onMounted(() => {
     background: linear-gradient(to bottom, orange, red);
     -webkit-text-fill-color: transparent;
     background-clip: text;
+}
+.game-home {
+  background-color: #faca96;
 }
 </style>

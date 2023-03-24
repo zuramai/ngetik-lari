@@ -1,5 +1,5 @@
 export class Timer {
-    time = -1
+    time = 0
     interval: NodeJS.Timer | null = null
 
     getTimeString() {
@@ -18,11 +18,15 @@ export class Timer {
     }
 
     start() {
+        this.time = 0
         this.interval = setInterval(() => this.time++, 1000)
-        this.time++
     }
 
     stop() {
         clearInterval(this.interval!)
+    }
+
+    restart() {
+        this.time = 0
     }
 }
