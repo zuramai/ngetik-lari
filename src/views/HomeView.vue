@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { Game } from '@/app/Game';
 import GameLogo from '@/components/GameLogo.vue'
+import  ModalDialog from '@/components/ModalDialog.vue';
 import { onMounted, ref, watch } from 'vue';
 
 const canvas = ref()
@@ -10,9 +11,11 @@ const withHomeScreen = false
 
 onMounted(() => {
   game.value = new Game(canvas.value)
+
   // if(!withHomeScreen) game.value.start()
 })
 
+const finishModalOpen = ref(true)
 
 </script>
 <template>
@@ -28,6 +31,15 @@ onMounted(() => {
         </div>
       </div>
     </div>
+    <ModalDialog v-model:open="finishModalOpen">
+      <h1 class="text-orange-500 text-center text-cursive">You Finished!</h1>
+      <p v-if="game" class="text-center">Time: {{ game?.timer.getTimeString() }}</p>
+
+      <div class="buttons flex gap-3 mt-5">
+        <button class="btn text-white flex-1">Save Score</button>
+        <button class="btn btn-blue text-white flex-1">Try again</button>
+      </div>
+    </ModalDialog>
   </main>
 </template>
 

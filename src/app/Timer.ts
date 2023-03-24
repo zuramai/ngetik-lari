@@ -2,9 +2,13 @@ export class Timer {
     time = -1
     interval: NodeJS.Timer | null = null
 
-    draw(ctx: CanvasRenderingContext2D) {
+    getTimeString() {
         const timeString = `${Math.floor(this.time/60).toString().padStart(2,'0')}:${(this.time%60).toString().padStart(2,'0')}`
+        return timeString
+    }
 
+    draw(ctx: CanvasRenderingContext2D) {
+        const timeString = this.getTimeString()
         ctx.fillStyle = "white"
         ctx.strokeStyle = "black"
         ctx.textAlign = "center"
@@ -18,7 +22,7 @@ export class Timer {
         this.time++
     }
 
-    end() {
+    stop() {
         clearInterval(this.interval!)
     }
 }
