@@ -4,6 +4,7 @@ import { Player } from "./Player"
 import { MapDust } from "./maps/MapDust"
 import { MoveDirection, type Position } from "./types/Player"
 import type { Block } from "./Block"
+import { Timer } from "./Timer"
 
 export class Game {
     canvas: HTMLCanvasElement
@@ -12,6 +13,7 @@ export class Game {
     player: Player|null = null
     currentlyTyping = ""
     nextBlocks:  Block[]|null = []
+    timer = new Timer()
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas 
@@ -29,13 +31,7 @@ export class Game {
 
     start() {
         this.player = new Player(this.map?.startAt!)
-        setInterval(() => {
-            // this.map!.map.forEach(row => {
-            //     row.forEach(col => {
-            //         if(typeof col.content == 'string') col.content = randomWord()
-            //     })
-            // })
-        },100)
+        this.timer.start()
         requestAnimationFrame(() => this.render())
     }
 
@@ -85,6 +81,7 @@ export class Game {
     draw() {
         this.map?.draw(this.ctx, this.getCameraPosition())
         this.player!.draw(this.ctx);
+        this.timer.draw(this.ctx)
     }
 
     move(direction: MoveDirection) {

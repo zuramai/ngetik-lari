@@ -57,6 +57,7 @@ export class Block {
             const textSize = ctx.measureText(this.content)
             // Draw text
             ctx.font = "13px arial"
+            ctx.textAlign = "left"
             ctx.fillStyle = 'white'
             ctx.fillText(this.content.toString(), blockX + this.width/2 - textSize.width/2, blockY + this.height / 2)
 
