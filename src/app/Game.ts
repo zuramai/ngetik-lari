@@ -97,7 +97,8 @@ export class Game {
         const nextRow = this.player?.position.row! + moveTo[1]
         const nextCol = this.player?.position.col! + moveTo[0]
         
-        const nextBlock = this.map?.map[nextRow][nextCol] || null
+        const nextBlock = this.map?.map?.[nextRow]?.[nextCol] || null
+
         if(!nextBlock || !nextBlock.content) return 
 
         this.player!.position.row = nextRow
@@ -111,14 +112,16 @@ export class Game {
         const possibleBlocks = this.checkNextBlocks()
 
         if(key === 'Backspace') {
-            this.currentlyTyping = this.currentlyTyping.slice(0, -1)
+            this.nextBlock!.currentlyTyping = this.currentlyTyping = this.currentlyTyping.slice(0, -1)
+
+            if(this.currentlyTyping == "") this.nextBlock = null
             return 
         }
         if(key.search(/^[a-zA-Z0-9-]+$/) == -1) return 
         if(['Shift', 'Control', 'Enter'].includes(key)) return 
         
         this.currentlyTyping += key
-        console.log('typing1: ', this.currentlyTyping)
+        console.log('typing: ', this.currentlyTyping)
         
         if(!this.nextBlock) {
             this.nextBlock = possibleBlocks.find(block => block.content.toString().startsWith(this.currentlyTyping)) || null 
@@ -130,8 +133,8 @@ export class Game {
         } 
 
         this.nextBlock.currentlyTyping = this.currentlyTyping
+        console.log(this.nextBlock)
 
-        console.log('typing3: ', this.currentlyTyping)
         
         if(this.nextBlock?.currentlyTyping === this.nextBlock?.content) {
             this.movePlayerTo(this.nextBlock!.position)

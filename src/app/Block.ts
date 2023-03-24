@@ -47,10 +47,20 @@ export class Block {
             ctx.strokeStyle = 'rgba(12,12,12,1)'
             ctx.stroke() 
         }
+
         
-        ctx.font = "13px arial"
-        ctx.fillStyle = 'white'
-        ctx.textAlign = 'center'
-        if(this.content) ctx.fillText(this.content.toString(), blockX + this.width/2, blockY + this.height / 2)
+        if(this.content) {
+            const textSize = ctx.measureText(this.content)
+            // Draw text
+            ctx.font = "13px arial"
+            ctx.fillStyle = 'white'
+            ctx.fillText(this.content.toString(), blockX + this.width/2 - textSize.width/2, blockY + this.height / 2)
+
+            const isCorrectlyTyped = this.content.toString().startsWith(this.currentlyTyping)
+
+            //  Draw typed text
+            ctx.fillStyle = isCorrectlyTyped ? 'rgba(12,12,12,1)' : 'red'
+            ctx.fillText(this.currentlyTyping.toString(), blockX + this.width/2 - textSize.width/2, blockY + this.height / 2)
+        } 
     }
 }
