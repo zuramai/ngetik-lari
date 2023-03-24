@@ -14,6 +14,7 @@ export class Game {
     currentlyTyping = ""
     nextBlocks:  Block[]|null = []
     timer = new Timer()
+    finishCallbacks: (() => void)[] = []
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas 
@@ -74,8 +75,12 @@ export class Game {
         return possibleBlocks
     }
 
-    gameover() {
+    onFinish(cb: () => void) {
+        this.finishCallbacks.push(cb)
+    }
 
+    gameover() {
+        this.finishCallbacks.forEach(cb => cb())
     }
 
     draw() {
@@ -147,6 +152,11 @@ export class Game {
 
     movePlayerTo(position: Position) {
         this.player!.position = position
+
+        if(this.player!.position.col === this.map?.finishAt.col &&
+            this.player!.position.row === this.map?.finishAt.row) {
+                this.gameover()
+            }
     }
 
     events(e: KeyboardEvent) {

@@ -28,3 +28,9 @@ a:hover {
     width: 640px;
     height: 640px;
 }
+.visible {
+    visibility: visible;
+}
+.invisible {
+    visibility: hidden;
+}

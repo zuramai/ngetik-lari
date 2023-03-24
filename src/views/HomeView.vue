@@ -8,14 +8,21 @@ const canvas = ref()
 const game = ref<Game>()
 
 const withHomeScreen = false
+const finishTime = ref("00:00")
+const finishModalOpen = ref(false)
 
 onMounted(() => {
   game.value = new Game(canvas.value)
 
+  game.value.onFinish(() => {
+    game.value?.timer.stop()
+    finishTime.value = game.value?.timer.getTimeString()!
+    finishModalOpen.value = true
+  })
+
   // if(!withHomeScreen) game.value.start()
 })
 
-const finishModalOpen = ref(true)
 
 </script>
 <template>
