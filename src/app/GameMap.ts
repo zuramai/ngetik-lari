@@ -6,6 +6,7 @@ export class GameMap implements GameMapInterface {
     map: MapMatrix
     name: string 
     startAt: Position = { row: 0, col: 0 } // default
+    finishAt: Position = { row: 0, col: 0 } // default
 
     constructor(name: string, map: MapMatrix) {
         this.name = name
@@ -15,7 +16,7 @@ export class GameMap implements GameMapInterface {
     draw(ctx: CanvasRenderingContext2D, cameraPosition: Point) {
         this.map.forEach((row) => {
             row.forEach((block) => {
-                block.draw(ctx, cameraPosition)
+                block.draw(ctx, cameraPosition, this.finishAt)
             });
         })
     }

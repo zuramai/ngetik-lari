@@ -1,12 +1,16 @@
 import type { Point } from "./types/Map"
 import type { Position } from "./types/Player"
+import FlagImage from '@/assets/images/flag.png'
 
-export type BlockContent = string | 0 | 'player' | 'musuh'
+export type BlockContent = string | 0 
 
 const blockColors = {
     0: 'orange',
     empty: '#faca96'
 }
+
+const finishImage = new Image 
+finishImage.src = FlagImage
 
 export class Block {
     content: BlockContent 
@@ -32,7 +36,7 @@ export class Block {
         return this.position.row * this.width 
     }
 
-    draw(ctx: CanvasRenderingContext2D, cameraPosition: Point) {
+    draw(ctx: CanvasRenderingContext2D, cameraPosition: Point, finishAt?: Position) {
         ctx.beginPath()
         
         ctx.fillStyle = blockColors[this.content === 0 ? 0 : 'empty' ]
@@ -61,6 +65,11 @@ export class Block {
             //  Draw typed text
             ctx.fillStyle = isCorrectlyTyped ? 'rgba(12,12,12,1)' : 'red'
             ctx.fillText(this.currentlyTyping.toString(), blockX + this.width/2 - textSize.width/2, blockY + this.height / 2)
+
+            if(finishAt && finishAt.col == this.position.col && finishAt.row == this.position.row) {
+                ctx.drawImage(finishImage, blockX + this.width/2 - 20, blockY + this.height / 2 + 10, 40, 25)
+            }
         } 
     }
+
 }
