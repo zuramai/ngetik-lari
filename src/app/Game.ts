@@ -11,7 +11,7 @@ export class Game {
     ctx: CanvasRenderingContext2D
     player: Player|null = null
     currentlyTyping = ""
-    nextBlock:  Block|null = null
+    nextBlocks:  Block[]|null = []
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas 
@@ -70,7 +70,9 @@ export class Game {
             const nextCol = this.player?.position.col! + d[1]
             const nextRow = this.player?.position.row! + d[0]
             const nextBlock = this.map?.map![nextRow]?.[nextCol] || null
-            if(nextCol > 0 && nextRow > 0 && nextBlock && nextBlock.content !== 0) possibleBlocks.push(nextBlock)
+            if(nextCol > 0 && nextRow > 0 && nextBlock && nextBlock.content !== 0) {
+                possibleBlocks.push(nextBlock)
+            } 
         })
 
         return possibleBlocks
@@ -108,13 +110,11 @@ export class Game {
     }
 
     type(key: string)  {
-        
-        const possibleBlocks = this.checkNextBlocks()
-
         if(key === 'Backspace') {
-            this.nextBlock!.currentlyTyping = this.currentlyTyping = this.currentlyTyping.slice(0, -1)
+            this.currentlyTyping = this.currentlyTyping.slice(0, -1)
+            this.nextBlocks?.forEach(block => block.currentlyTyping = this.currentlyTyping)
 
-            if(this.currentlyTyping == "") this.nextBlock = null
+            if(this.currentlyTyping == "") this.nextBlocks = []
             return 
         }
         if(key.search(/^[a-zA-Z0-9-]+$/) == -1) return 
@@ -123,24 +123,28 @@ export class Game {
         this.currentlyTyping += key
         console.log('typing: ', this.currentlyTyping)
         
-        if(!this.nextBlock) {
-            this.nextBlock = possibleBlocks.find(block => block.content.toString().startsWith(this.currentlyTyping)) || null 
-            if(!this.nextBlock) {
-                this.currentlyTyping = ""
-                return
-            } 
-            
-        } 
+        const possibleBlocks = this.checkNextBlocks()
 
-        this.nextBlock.currentlyTyping = this.currentlyTyping
-        console.log(this.nextBlock)
+        if(this.nextBlocks?.length !== 1) {
+            this.nextBlocks = possibleBlocks.filter(block => block.content.toString().startsWith(this.currentlyTyping))
+        }
+
+        // If no possible words, reset
+        if(!this.nextBlocks.length){
+            this.currentlyTyping = ''
+            return
+        }
+
+        // Type to all possible blocks
+        this.nextBlocks.forEach(n  => n.currentlyTyping = this.currentlyTyping)
 
         
-        if(this.nextBlock?.currentlyTyping === this.nextBlock?.content) {
-            this.movePlayerTo(this.nextBlock!.position)
+        const completelyTypedBlock = this.nextBlocks.find(block => block?.currentlyTyping === block?.content)
+        if(completelyTypedBlock) {
+            this.movePlayerTo(completelyTypedBlock!.position)
             this.currentlyTyping = ""
-            this.nextBlock!.currentlyTyping = ""
-            this.nextBlock = null
+            this.nextBlocks.forEach(b => b.currentlyTyping = '')
+            this.nextBlocks = []
         }
     }
 
