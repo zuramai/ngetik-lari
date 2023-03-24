@@ -2,13 +2,16 @@ import { randomWord } from "@/api/words"
 import type { GameMap } from "./GameMap"
 import { Player } from "./Player"
 import { MapDust } from "./maps/MapDust"
-import { MoveDirection } from "./types/Player"
+import { MoveDirection, type Position } from "./types/Player"
+import type { Block } from "./Block"
 
 export class Game {
     canvas: HTMLCanvasElement
     map: GameMap | null = null
     ctx: CanvasRenderingContext2D
     player: Player|null = null
+    currentlyTyping = ""
+    nextBlock:  Block|null = null
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas 
@@ -55,6 +58,24 @@ export class Game {
         }
     }
 
+    checkNextBlocks() {
+        const moveMap = {
+            [MoveDirection.DOWN]: [0, 1],
+            [MoveDirection.UP]: [0, -1],
+            [MoveDirection.RIGHT]: [1, 0],
+            [MoveDirection.LEFT]: [-1, 0],
+        }
+        const possibleBlocks: Block[] = []
+        Object.values(moveMap).forEach(d => {
+            const nextCol = this.player?.position.col! + d[1]
+            const nextRow = this.player?.position.row! + d[0]
+            const nextBlock = this.map?.map![nextRow]?.[nextCol] || null
+            if(nextCol > 0 && nextRow > 0 && nextBlock && nextBlock.content !== 0) possibleBlocks.push(nextBlock)
+        })
+
+        return possibleBlocks
+    }
+
     gameover() {
 
     }
@@ -76,13 +97,52 @@ export class Game {
         const nextRow = this.player?.position.row! + moveTo[1]
         const nextCol = this.player?.position.col! + moveTo[0]
         
-        const nextBlock = this.map?.map[nextRow][nextCol]
+        const nextBlock = this.map?.map[nextRow][nextCol] || null
         if(!nextBlock || !nextBlock.content) return 
 
         this.player!.position.row = nextRow
         this.player!.position.col = nextCol
         
-        console.log(this.player!.position)
+        console.log(this.checkNextBlocks())
+    }
+
+    type(key: string)  {
+        
+        const possibleBlocks = this.checkNextBlocks()
+
+        if(key === 'Backspace') {
+            this.currentlyTyping = this.currentlyTyping.slice(0, -1)
+            return 
+        }
+        if(key.search(/^[a-zA-Z0-9-]+$/) == -1) return 
+        if(['Shift', 'Control', 'Enter'].includes(key)) return 
+        
+        this.currentlyTyping += key
+        console.log('typing1: ', this.currentlyTyping)
+        
+        if(!this.nextBlock) {
+            this.nextBlock = possibleBlocks.find(block => block.content.toString().startsWith(this.currentlyTyping)) || null 
+            if(!this.nextBlock) {
+                this.currentlyTyping = ""
+                return
+            } 
+            
+        } 
+
+        this.nextBlock.currentlyTyping = this.currentlyTyping
+
+        console.log('typing3: ', this.currentlyTyping)
+        
+        if(this.nextBlock?.currentlyTyping === this.nextBlock?.content) {
+            this.movePlayerTo(this.nextBlock!.position)
+            this.currentlyTyping = ""
+            this.nextBlock!.currentlyTyping = ""
+            this.nextBlock = null
+        }
+    }
+
+    movePlayerTo(position: Position) {
+        this.player!.position = position
     }
 
     events(e: KeyboardEvent) {
@@ -94,7 +154,9 @@ export class Game {
             'ArrowDown': MoveDirection.DOWN,
         }
         if(Object.keys(directionMap).includes(e.key)) e.preventDefault()
-
+        console.log(e.key);
+        
         if(directionMap[e.key]) this.move(directionMap[e.key])
+        else this.type(e.key)
     }
 }
