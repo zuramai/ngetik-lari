@@ -5,7 +5,7 @@ export const fetchUser = () => {
     return session
 }
 
-export const login = async (email: string, password: string) {
+export const login = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({
         email, password
     })
@@ -15,11 +15,11 @@ export const login = async (email: string, password: string) {
     return true
 }
 
-export const logout = () => {
-    supabase.auth.signOut()
+export const logout = async () => {
+    await supabase.auth.signOut()
 }
 
-export const register = (email: string, username: string, password: string) => {
+export const register = async (email: string, username: string, password: string) => {
     const { error } = await supabase.auth.signUp({
         email, password, options: {
             data: {
