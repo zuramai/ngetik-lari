@@ -1,15 +1,21 @@
 <script lang="ts" setup>
 import { Game } from '@/app/Game';
+import LoginModal from '@/components/auth/LoginModal.vue';
 import GameLogo from '@/components/GameLogo.vue'
 import  ModalDialog from '@/components/ModalDialog.vue';
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
+import { useAuth } from '@/composables/useAuth'
+import type { User } from '@supabase/supabase-js';
 
+
+const auth = useAuth()
 const canvas = ref()
 const game = ref<Game>()
 
 const showHomeScreen = ref(true)
 const finishTime = ref("00:00")
 const finishModalOpen = ref(false)
+const loginModalOpen = ref(true)
 
 onMounted(() => {
   game.value = new Game(canvas.value)
@@ -33,10 +39,24 @@ const startGame = () => {
   showHomeScreen.value = false
 }
 
+const user = computed(() => auth.currentUser)
+
 </script>
 <template>
   <main class="container-sm mx-auto">
     <div class="game-area relative">
+      
+      <div class="game-area__header absolute top-3 z-2  w-full pr-4">
+        <router-link v-if="!user.value"  to="#" @click.prevent="loginModalOpen = true" class="flex items-center justify-end">
+          <div class="i-mdi-user"></div>
+          <span>Login</span>
+        </router-link>
+        <router-link v-else to="/profile" class="flex items-center justify-end">
+          <div class="i-mdi-user"></div>
+          <span>{{ auth.getUser() }}</span>
+        </router-link>
+      </div>
+
       <canvas id="canvas" ref="canvas" width="640" height="640"></canvas>
       
       <div v-if="showHomeScreen" class="game-home absolute inset-0 text-center flex items-center w-full">
@@ -59,6 +79,7 @@ const startGame = () => {
         <button class="btn btn-blue text-white flex-1" @click="restart">Restart</button>
       </div>
     </ModalDialog>
+    <LoginModal v-model:open="loginModalOpen"></LoginModal>
   </main>
 </template>
 
