@@ -22,22 +22,29 @@ export const useAuth = () => {
         isLoading.value = true
         const register = await apiUser.register(email, username, password)
         isLoading.value = false 
-
-        if(!login) errorMessage.value = "Invalid input"
+        if(register !== true) {
+            console.log(register.message)
+            if(register.status === 422) {
+                errorMessage.value = register.message
+            } else {
+                errorMessage.value = "Invalid input"
+            }
+        }   
 
         return register
     }
 
+    const currentUser = ref<User|null>(null)
     const getUser = async () => {
-        return await apiUser.fetchUser()
+        const res = await apiUser.fetchUser()
+        currentUser.value = res.data.session?.user || null
     }
 
     const logout = async () => {
         return await apiUser.logout()
     }
 
-    const currentUser = ref<User|null>()
-    getUser().then(session => currentUser.value = session.data.session?.user)
+    getUser()
 
     return {
         login, 

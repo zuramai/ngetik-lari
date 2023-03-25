@@ -28,7 +28,7 @@ export const register = async (email: string, username: string, password: string
         }
     })
 
-    if(error) return false 
+    if(error) return error
 
     return true;
 }

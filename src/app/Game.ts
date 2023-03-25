@@ -108,7 +108,6 @@ export class Game {
         this.player!.position.row = nextRow
         this.player!.position.col = nextCol
         
-        console.log(this.checkNextBlocks())
     }
 
     type(key: string)  {
@@ -123,7 +122,6 @@ export class Game {
         if(['Shift', 'Control', 'Enter'].includes(key)) return 
         
         this.currentlyTyping += key
-        console.log('typing: ', this.currentlyTyping)
         
         const possibleBlocks = this.checkNextBlocks()
 

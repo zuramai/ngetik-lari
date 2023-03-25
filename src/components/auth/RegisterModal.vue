@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { login } from '@/api/user';
+import { register } from '@/api/user';
 import { reactive, ref } from 'vue';
 import FormInput from '../forms/FormInput.vue';
 import ModalDialog from '../ModalDialog.vue';
@@ -10,18 +10,20 @@ const auth = useAuth();
 const props = defineProps<{
   open: boolean
 }>()
-const emit = defineEmits(['update:open','click:register', 'success'])
-const loginSuccess = ref(false)
 
-const login = reactive({
+const registerSuccess = ref(false)
+const register = reactive({
+  username: '',
   email: '',
   password: ''
 })
+const emit = defineEmits(['click:login', 'success', 'update:open'])
 
-const doLogin = async () => {
-  loginSuccess.value = await auth.login(login.email, login.password)
+const doRegister = async () => {
+  const success = await auth.register(register.email, register.username, register.password)
 
-  if (loginSuccess.value === true) {
+  if (success === true) {
+    registerSuccess.value = success
     emit('success')
     setTimeout(() => {
       emit('update:open', false)
@@ -32,17 +34,18 @@ const doLogin = async () => {
 </script>
 <template>
   <ModalDialog :open="open" @update:open="v => $emit('update:open', v)">
-    <h1 class="text-orange-500 text-center text-cursive">Login</h1>
-    <form method="POST" v-if="!loginSuccess" @submit.prevent="doLogin">
+    <h1 class="text-orange-500 text-center text-cursive">Register</h1>
+    <form v-if="!registerSuccess" method="POST" @submit.prevent="doRegister">
       <div v-if="auth.errorMessage.value !== ''" class="alert alert-danger">
         {{ auth.errorMessage.value }}
       </div>
-      <FormInput name="email" label="Email" v-model="login.email" type="email"></FormInput>
-      <FormInput name="password" label="Password" v-model="login.password" type="password"></FormInput>
+      <FormInput name="username" label="Username" v-model="register.username" ></FormInput>
+      <FormInput name="email" label="Email" v-model="register.email" type="email"></FormInput>
+      <FormInput name="password" label="Password" v-model="register.password" type="password"></FormInput>
       <div class="flex justify-between">
         <span>
-          Don't have account?
-          <a href="#" class="text-link" @click="emit('click:register')">Register</a>
+          Have an account?
+          <a href="#" class="text-link" @click="emit('click:login')">Login</a>
         </span>
         <button class="btn btn-sm">Submit</button>
       </div>

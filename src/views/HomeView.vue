@@ -5,7 +5,7 @@ import GameLogo from '@/components/GameLogo.vue'
 import  ModalDialog from '@/components/ModalDialog.vue';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useAuth } from '@/composables/useAuth'
-import type { User } from '@supabase/supabase-js';
+import RegisterModal from '@/components/auth/RegisterModal.vue';
 
 
 const auth = useAuth()
@@ -15,7 +15,8 @@ const game = ref<Game>()
 const showHomeScreen = ref(true)
 const finishTime = ref("00:00")
 const finishModalOpen = ref(false)
-const loginModalOpen = ref(true)
+const loginModalOpen = ref(false)
+const registerModalOpen = ref(false)
 
 onMounted(() => {
   game.value = new Game(canvas.value)
@@ -40,6 +41,11 @@ const startGame = () => {
 }
 
 const user = computed(() => auth.currentUser)
+auth.getUser()
+const onAuthSuccess = () => {
+  auth.getUser()
+  console.log(user.value)
+}
 
 </script>
 <template>
@@ -53,7 +59,7 @@ const user = computed(() => auth.currentUser)
         </router-link>
         <router-link v-else to="/profile" class="flex items-center justify-end">
           <div class="i-mdi-user"></div>
-          <span>{{ auth.getUser() }}</span>
+          <span>{{ user.value.user_metadata?.username }}</span>
         </router-link>
       </div>
 
@@ -63,8 +69,8 @@ const user = computed(() => auth.currentUser)
         <div class="game-home__content w-[400px] mx-auto flex flex-col">
           <GameLogo/>
           <div class="menu">
-              <button class="btn w-full mb-3" @click="startGame">Play</button>
-              <router-link class="btn" to="/leaderboard" role="button">Leaderboard</router-link>
+              <button class="btn btn-lg w-full mb-3" @click="startGame">Play</button>
+              <router-link class="btn btn-lg" to="/leaderboard" role="button">Leaderboard</router-link>
           </div>
           <p class="self-end mt-5">Created by <a href="https://saugi.me" target="_blank" class="text-link">Saugi</a></p>
         </div>
@@ -79,7 +85,8 @@ const user = computed(() => auth.currentUser)
         <button class="btn btn-blue text-white flex-1" @click="restart">Restart</button>
       </div>
     </ModalDialog>
-    <LoginModal v-model:open="loginModalOpen"></LoginModal>
+    <LoginModal v-model:open="loginModalOpen" @success="onAuthSuccess" @click:register="() => {loginModalOpen = false; registerModalOpen = true}"></LoginModal>
+    <RegisterModal v-model:open="registerModalOpen" @success="onAuthSuccess" @click:login="() => {loginModalOpen = true; registerModalOpen = false}"></RegisterModal>
   </main>
 </template>
 
