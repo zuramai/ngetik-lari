@@ -6,6 +6,7 @@ import  ModalDialog from '@/components/ModalDialog.vue';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useAuth } from '@/composables/useAuth'
 import RegisterModal from '@/components/auth/RegisterModal.vue';
+import * as scoreApi from '@/api/score'
 
 
 const auth = useAuth()
@@ -25,6 +26,8 @@ onMounted(() => {
     game.value?.timer.stop()
     finishTime.value = game.value?.timer.getTimeString()!
     finishModalOpen.value = true
+
+
   })
 
   // if(!withHomeScreen) game.value.start()
@@ -38,6 +41,18 @@ const restart = () => {
 const startGame = () => {
   game.value?.start()
   showHomeScreen.value = false
+}
+
+const isScoreSaved = ref(false)
+const saveScore = async () => {
+  const userId = auth.currentUser.value?.id
+  const seconds = game.value?.timer.time
+
+  const error = await scoreApi.saveScore(userId!, game.value?.map?.name!, game.value?.mode!, seconds!)
+  if(!error) {
+    isScoreSaved.value = true
+    alert('Score saved')
+  } 
 }
 
 const user = computed(() => auth.currentUser)
@@ -84,7 +99,7 @@ onUnmounted(() => {
       <p v-if="game" class="text-center">Time: {{ game?.timer.getTimeString() }}</p>
 
       <div class="buttons flex gap-3 mt-5">
-        <button class="btn text-white flex-1" :class="{'btn-disabled': auth.isLoading}">Save Score</button>
+        <button @click="saveScore" class="btn text-white flex-1" :class="{'btn-disabled': auth.isLoading}" v-if="!isScoreSaved">Save Score</button>
         <button class="btn btn-blue text-white flex-1" @click="restart">Restart</button>
       </div>
     </ModalDialog>

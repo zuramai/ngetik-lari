@@ -14,6 +14,7 @@ export class Game {
     currentlyTyping = ""
     nextBlocks:  Block[]|null = []
     timer = new Timer()
+    mode:'lari'|'kejar' = 'lari'
     finishCallbacks: (() => void)[] = []
 
     constructor(canvas: HTMLCanvasElement) {

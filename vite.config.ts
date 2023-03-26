@@ -19,7 +19,8 @@ export default defineConfig({
         'btn-blue': 'block px-3 py-4 border-blue-500 bg-gradient-to-b from-blue-500 to-indigo-600 hover:from-blue-400 hover:to-indigo-500 hover:decoration-none text-dark-500',
         'btn-disabled': '',
         'text-link': 'text-orange-500 underline',
-        'alert': 'px-3 py-2 bg-red-500 bg-opacity-30 mb-2 rounded-md'
+        'alert': 'px-3 py-2 bg-red-500 bg-opacity-30 mb-2 rounded-md',
+        'table': 'w-full'
       },
       presets: [
         presetMini(),
