@@ -44,11 +44,12 @@ const startGame = () => {
 }
 
 const isScoreSaved = ref(false)
+const saveScoreLoading = ref(false)
 const saveScore = async () => {
   const userId = auth.currentUser.value?.id
   const seconds = game.value?.timer.time
 
-  const error = await scoreApi.saveScore(userId!, game.value?.map?.name!, game.value?.mode!, seconds!)
+  const error = await scoreApi.saveScore(userId!, game.value?.mode!, game.value?.map?.name!, seconds!)
   if(!error) {
     isScoreSaved.value = true
     alert('Score saved')
@@ -99,7 +100,10 @@ onUnmounted(() => {
       <p v-if="game" class="text-center">Time: {{ game?.timer.getTimeString() }}</p>
 
       <div class="buttons flex gap-3 mt-5">
-        <button @click="saveScore" class="btn text-white flex-1" :class="{'btn-disabled': auth.isLoading}" v-if="!isScoreSaved">Save Score</button>
+        <button @click="saveScore" class="btn text-white flex-1" :disabled="saveScoreLoading" v-if="!isScoreSaved">
+          <IconLoader v-if="saveScoreLoading"></IconLoader>
+          Save Score
+        </button>
         <button class="btn btn-blue text-white flex-1" @click="restart">Restart</button>
       </div>
     </ModalDialog>
