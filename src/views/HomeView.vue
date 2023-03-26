@@ -3,7 +3,7 @@ import { Game } from '@/app/Game';
 import LoginModal from '@/components/auth/LoginModal.vue';
 import GameLogo from '@/components/GameLogo.vue'
 import  ModalDialog from '@/components/ModalDialog.vue';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useAuth } from '@/composables/useAuth'
 import RegisterModal from '@/components/auth/RegisterModal.vue';
 
@@ -47,17 +47,20 @@ const onAuthSuccess = () => {
   console.log(user.value)
 }
 
+onUnmounted(() => {
+  game.value?.stop()
+})
 </script>
 <template>
   <main class="container-sm mx-auto">
     <div class="game-area relative">
       
-      <div class="game-area__header absolute top-3 z-2  w-full pr-4">
-        <router-link v-if="!user.value"  to="#" @click.prevent="loginModalOpen = true" class="flex items-center justify-end">
+      <div class="game-area__header absolute top-3 z-2  w-full pr-4 flex justify-end">
+        <router-link v-if="!user.value"  to="#" @click.prevent="loginModalOpen = true" class="flex items-center gap-1">
           <div class="i-mdi-user"></div>
           <span>Login</span>
         </router-link>
-        <router-link v-else to="/profile" class="flex items-center justify-end">
+        <router-link v-else to="/profile" class="flex items-center gap-1">
           <div class="i-mdi-user"></div>
           <span>{{ user.value.user_metadata?.username }}</span>
         </router-link>
@@ -81,7 +84,7 @@ const onAuthSuccess = () => {
       <p v-if="game" class="text-center">Time: {{ game?.timer.getTimeString() }}</p>
 
       <div class="buttons flex gap-3 mt-5">
-        <button class="btn text-white flex-1">Save Score</button>
+        <button class="btn text-white flex-1" :class="{'btn-disabled': auth.isLoading}">Save Score</button>
         <button class="btn btn-blue text-white flex-1" @click="restart">Restart</button>
       </div>
     </ModalDialog>

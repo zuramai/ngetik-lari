@@ -51,6 +51,7 @@ export const useAuth = () => {
         logout, 
         errorMessage,
         currentUser,
+        isLoading,
         register,
         getUser
     }

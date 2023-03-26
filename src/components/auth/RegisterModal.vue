@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { register } from '@/api/user';
 import { reactive, ref } from 'vue';
 import FormInput from '../forms/FormInput.vue';
 import ModalDialog from '../ModalDialog.vue';
@@ -47,7 +46,10 @@ const doRegister = async () => {
           Have an account?
           <a href="#" class="text-link" @click="emit('click:login')">Login</a>
         </span>
-        <button class="btn btn-sm">Submit</button>
+        <button class="btn btn-sm" :disabled="auth.isLoading.value">
+          <IconLoader v-if="auth.isLoading.value"></IconLoader>
+          Submit
+        </button>
       </div>
     </form>
     <div class="auth-success text-center pt-3 text-xl pb-3" v-else>
