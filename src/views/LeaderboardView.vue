@@ -23,8 +23,8 @@ const getScores = () => {
           map: key.map,
           mode: key.mode,
           score: key.score,
-          user_id: key.user_id,
-          username: key.users.raw_user_meta_data.username,
+          username: key.metadata.username,
+          created_at: key.created_at,
         }
       }) || []
       loading.value = false

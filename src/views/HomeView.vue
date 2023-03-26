@@ -33,8 +33,10 @@ onMounted(() => {
   // if(!withHomeScreen) game.value.start()
 })
 
+const isScoreSaved = ref(false)
 const restart = () => {
   game.value?.restart()
+  isScoreSaved.value = false
   finishModalOpen.value = false 
 }
 
@@ -43,7 +45,6 @@ const startGame = () => {
   showHomeScreen.value = false
 }
 
-const isScoreSaved = ref(false)
 const saveScoreLoading = ref(false)
 const saveScore = async () => {
   const userId = auth.currentUser.value?.id

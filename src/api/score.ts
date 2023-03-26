@@ -1,7 +1,7 @@
 import { supabase } from '@/composables/useSupabase'
 export const getScores = async (map: string, mode: string) => {
-    const query =  supabase.from('scores')
-        .select('*, users:users(raw_user_meta_data)')
+    const query = supabase.from('leaderboard')
+        .select('*')
         .filter('mode', 'eq', mode)
         .limit(10)
     if(map !== 'all') {
