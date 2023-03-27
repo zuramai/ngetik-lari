@@ -1,4 +1,5 @@
 import arrowImageSrc from '@/assets/icons/arrow-up.svg'
+import type { Position } from './types/Player'
 export enum Direction {
     TOP_LEFT = 'TOP_LEFT',
     TOP_CENTER = 'TOP_CENTER',
@@ -26,6 +27,19 @@ export class Arrow {
 
     rotate(deg: number) {
         this.arrowEl.style.rotate = `${deg}deg`
+    }
+
+    checkRotation(playerPosition: Position, finishPosition: Position) {
+
+        // Check direction to finish
+        if(playerPosition.row < finishPosition.row && playerPosition.col == finishPosition.col) this.changeDirection(Direction.BOTTOM_CENTER)
+        else if(playerPosition.row < finishPosition.row && playerPosition.col > finishPosition.col) this.changeDirection(Direction.BOTTOM_LEFT)
+        else if(playerPosition.row < finishPosition.row && playerPosition.col < finishPosition.col) this.changeDirection(Direction.BOTTOM_RIGHT)
+        else if(playerPosition.row > finishPosition.row && playerPosition.col < finishPosition.col) this.changeDirection(Direction.TOP_RIGHT)
+        else if(playerPosition.row > finishPosition.row && playerPosition.col == finishPosition.col) this.changeDirection(Direction.TOP_CENTER)
+        else if(playerPosition.row > finishPosition.row && playerPosition.col > finishPosition.col) this.changeDirection(Direction.TOP_LEFT)
+        else if(playerPosition.row == finishPosition.row && playerPosition.col < finishPosition.col) this.changeDirection(Direction.RIGHT)
+        else if(playerPosition.row == finishPosition.row && playerPosition.col > finishPosition.col) this.changeDirection(Direction.LEFT)
     }
 
     show() {

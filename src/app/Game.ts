@@ -42,6 +42,7 @@ export class Game {
         this.player = new Player(this.map?.startAt!)
         this.timer.start()
         this.arrow.show()
+        this.arrow.checkRotation(this.player!.position, this.map?.finishAt!)
         requestAnimationFrame(() => this.render())
     }
 
@@ -170,17 +171,7 @@ export class Game {
 
     movePlayerTo(position: Position) {
         this.player!.position = position
-        
-        // Check direction to finish
-        const finishAt = this.map?.finishAt!
-        if(position.row < finishAt.row && position.col == finishAt.col) this.arrow.changeDirection(Direction.BOTTOM_CENTER)
-        else if(position.row < finishAt.row && position.col > finishAt.col) this.arrow.changeDirection(Direction.BOTTOM_LEFT)
-        else if(position.row < finishAt.row && position.col < finishAt.col) this.arrow.changeDirection(Direction.BOTTOM_RIGHT)
-        else if(position.row > finishAt.row && position.col < finishAt.col) this.arrow.changeDirection(Direction.TOP_RIGHT)
-        else if(position.row > finishAt.row && position.col == finishAt.col) this.arrow.changeDirection(Direction.TOP_CENTER)
-        else if(position.row > finishAt.row && position.col > finishAt.col) this.arrow.changeDirection(Direction.TOP_LEFT)
-        else if(position.row == finishAt.row && position.col < finishAt.col) this.arrow.changeDirection(Direction.RIGHT)
-        else if(position.row == finishAt.row && position.col > finishAt.col) this.arrow.changeDirection(Direction.LEFT)
+        this.arrow.checkRotation(this.player!.position, this.map?.finishAt!)
 
         if(this.player!.position.col === this.map?.finishAt.col &&
             this.player!.position.row === this.map?.finishAt.row) {
