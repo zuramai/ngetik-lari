@@ -96,7 +96,12 @@ onUnmounted(() => {
               <button class="btn btn-lg w-full mb-3" @click="startGame">Play</button>
               <router-link class="btn btn-lg" to="/leaderboard" role="button">Leaderboard</router-link>
           </div>
-          <p class="self-end mt-5">Created by <a href="https://saugi.me" target="_blank" class="text-link">Saugi</a></p>
+          <p class="self-end mt-5">
+            <a href="https://github.com/zuramai/ngetik-lari" target="_blank">
+              <div class="i-mdi-github text-xl mr-2" ></div>
+            </a>
+            <span>Created by <a href="https://saugi.me" target="_blank" class="text-link">Saugi</a></span>
+          </p>
         </div>
       </div>
     </div>

@@ -29,7 +29,12 @@ export default defineConfig({
       presets: [
         presetMini(),
         presetWind(),
-        presetIcons()
+        presetIcons({
+          extraProperties: {
+            'display': 'inline-block',
+            'vertical-align': 'sub',
+          },
+        })
       ]
     })    
   ],
