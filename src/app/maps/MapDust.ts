@@ -30,8 +30,8 @@ export class MapDust extends GameMap {
             col: 3,
         }
         this.finishAt = {
-            row: 6,
-            col: 5
+            row: 3,
+            col: 17
         }
         // this.finishAt = {
         //     row: 13,
