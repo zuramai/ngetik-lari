@@ -1,10 +1,12 @@
-import { randomWord } from "@/api/words"
+import { useWords } from "@/composables/useWords"
 import type { GameMap } from "./GameMap"
 import { Player } from "./Player"
 import { MapDust } from "./maps/MapDust"
 import { MoveDirection, type Position } from "./types/Player"
 import type { Block } from "./Block"
 import { Timer } from "./Timer"
+
+const words = useWords()
 
 export class Game {
     canvas: HTMLCanvasElement

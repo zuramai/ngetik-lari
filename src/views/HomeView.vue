@@ -7,6 +7,7 @@ import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useAuth } from '@/composables/useAuth'
 import RegisterModal from '@/components/auth/RegisterModal.vue';
 import * as scoreApi from '@/api/score'
+import IconLoader from '@/components/icons/IconLoader.vue';
 
 
 const auth = useAuth()
