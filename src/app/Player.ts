@@ -1,5 +1,12 @@
 import type { Position } from "./types/Player";
-import DogImage from '@/assets/images/dog.png'
+import DogImage from '@/assets/images/characters/dog.png'
+import PigImage from '@/assets/images/characters/pig.png'
+import type { Characters } from "@/types/Game";
+
+const characterImageMap = {
+    dog: DogImage,
+    pig: PigImage,
+}
 
 export class Player {
     position: Position
@@ -7,10 +14,10 @@ export class Player {
     height = 40
     image: HTMLImageElement
 
-    constructor(position: Position) {
+    constructor(position: Position, character: Characters) {
         this.position = position
         this.image = new Image 
-        this.image.src = DogImage
+        this.image.src = characterImageMap[character]
     }
 
     draw(ctx: CanvasRenderingContext2D) {

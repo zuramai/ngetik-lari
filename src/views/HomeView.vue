@@ -3,37 +3,41 @@ import { Game } from '@/app/Game';
 import LoginModal from '@/components/auth/LoginModal.vue';
 import GameLogo from '@/components/GameLogo.vue'
 import  ModalDialog from '@/components/ModalDialog.vue';
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, onMounted, onUnmounted, reactive, ref, watch } from 'vue';
 import { useAuth } from '@/composables/useAuth'
 import RegisterModal from '@/components/auth/RegisterModal.vue';
 import * as scoreApi from '@/api/score'
 import IconLoader from '@/components/icons/IconLoader.vue';
 import {useWords} from '@/composables/useWords'
+import GameOptionItem from '@/components/game/GameOptionItem.vue';
+import type {GameOptions} from '@/types/Game'
+
+import ImageDog from '@/assets/images/characters/dog.png'
+import ImagePig from '@/assets/images/characters/pig.png'
 
 
 const auth = useAuth()
 const canvas = ref()
-const game = ref<Game>()
+const game = ref<Game>(new Game())
 const words = useWords()
 
-const showHomeScreen = ref(true)
+type Screen = 'home' | 'game' | 'options'
+
+const screen = ref<Screen>('home')
+const gameOptions = reactive<GameOptions>({
+  character: 'dog',
+  map: 'dust',
+  mode: 'lari'
+})
 const finishTime = ref("00:00")
 const finishModalOpen = ref(false)
 const loginModalOpen = ref(false)
 const registerModalOpen = ref(false)
 
-onMounted(() => {
-  game.value = new Game(canvas.value)
-
-  game.value.onFinish(() => {
-    game.value?.timer.stop()
-    finishTime.value = game.value?.timer.getTimeString()!
-    finishModalOpen.value = true
-
-
-  })
-
-  // if(!withHomeScreen) game.value.start()
+game.value.onFinish(() => {
+  game.value?.timer.stop()
+  finishTime.value = game.value?.timer.getTimeString()!
+  finishModalOpen.value = true
 })
 
 const isScoreSaved = ref(false)
@@ -44,9 +48,10 @@ const restart = () => {
 }
 
 const startGame = async () => {
+  screen.value = 'game'
+  game.value?.init(canvas.value, gameOptions)
   await words.fetchWords()
   game.value?.start()
-  showHomeScreen.value = false
 }
 
 const saveScoreLoading = ref(false)
@@ -87,13 +92,15 @@ onUnmounted(() => {
         </router-link>
       </div>
 
-      <canvas id="canvas" ref="canvas" width="640" height="640"></canvas>
+      <!-- Game screen -->
+      <canvas v-show="screen == 'game'" id="canvas" ref="canvas" width="640" height="640"></canvas>
       
-      <div v-if="showHomeScreen" class="game-home absolute inset-0 text-center flex items-center w-full">
+      <!-- Game home page -->
+      <div v-if="screen == 'home'" class="game-home absolute inset-0 text-center flex items-center w-full">
         <div class="game-home__content w-[400px] mx-auto flex flex-col">
           <GameLogo/>
           <div class="menu">
-              <button class="btn btn-lg w-full mb-3" @click="startGame">Play</button>
+              <button class="btn btn-lg w-full mb-3" @click="screen = 'options'">Play</button>
               <router-link class="btn btn-lg" to="/leaderboard" role="button">Leaderboard</router-link>
           </div>
           <p class="self-end mt-5">
@@ -103,6 +110,34 @@ onUnmounted(() => {
             <span>Created by <a href="https://saugi.me" target="_blank" class="text-link">Saugi</a></span>
           </p>
         </div>
+      </div>
+
+      <!-- Game options -->
+      <div v-else-if="screen == 'options'" class="game-options p-10 text-xl">
+        <h1 class="text-cursive text-orange-500 mb-5">Choose</h1>
+        <table>
+          <tr>
+            <td>Character</td>
+            <td class="flex gap-3">
+              <GameOptionItem :imageSrc="ImageDog" value="dog" name="character" v-model="gameOptions.character"></GameOptionItem>
+              <GameOptionItem :imageSrc="ImagePig" value="pig" name="character" v-model="gameOptions.character"></GameOptionItem>
+            </td>
+          </tr>
+          <tr>
+            <td>Map</td>
+            <td>
+              <GameOptionItem  value="dust" name="map" v-model="gameOptions.map"></GameOptionItem>
+            </td>
+          </tr>
+          <tr>
+            <td>Mode</td>
+            <td class="flex gap-3">
+              <GameOptionItem  value="lari" name="mode" v-model="gameOptions.mode"></GameOptionItem>
+              <GameOptionItem  value="kejar" name="mode" v-model="gameOptions.mode" :disabled="true"></GameOptionItem>
+            </td>
+          </tr>
+        </table>
+        <button class="btn btn-lg w-full mb-3 text-xl" @click="startGame">Start Game</button>
       </div>
     </div>
     <ModalDialog v-model:open="finishModalOpen">
@@ -128,7 +163,14 @@ onUnmounted(() => {
     -webkit-text-fill-color: transparent;
     -webkit-background-clip: text;
 }
-.game-home {
-  background-color: #faca96;
+.game-home, .game-options {
+  background-color: var(--color-primary-light);
+  height: 640px;
+}
+.game-options table tr td:first-child {
+  width: 13rem;
+}
+.game-options table tr td {
+  padding: 1rem 0;
 }
 </style>

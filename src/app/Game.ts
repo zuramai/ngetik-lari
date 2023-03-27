@@ -8,38 +8,38 @@ import { Direction } from "./Arrow"
 import { Timer } from "./Timer"
 import { watch } from "vue"
 import { Arrow } from "./Arrow"
+import type { GameOptions } from "@/types/Game"
 
 const words = useWords()
 
 export class Game {
-    canvas: HTMLCanvasElement
+    canvas: HTMLCanvasElement 
     map: GameMap | null = null
-    arrow: Arrow
-    ctx: CanvasRenderingContext2D
+    arrow: Arrow 
+    ctx: CanvasRenderingContext2D 
     player: Player|null = null
     currentlyTyping = ""
     nextBlocks:  Block[]|null = []
     timer = new Timer()
     mode:'lari'|'kejar' = 'lari'
     finishCallbacks: (() => void)[] = []
+    options: GameOptions 
 
-    constructor(canvas: HTMLCanvasElement) {
+    constructor() {
+    }
+
+    init(canvas: HTMLCanvasElement, options: GameOptions) {
+        this.options = options
         this.canvas = canvas 
         this.ctx = canvas.getContext('2d')!
         this.arrow = new Arrow(canvas)
-        this.chooseMap()
-        // this.start()
         
         window.addEventListener('keydown', e => this.events(e))
     }
 
-    chooseMap() {
-        // Auto choose
-    }
-
     start() {
         this.map = new MapDust()
-        this.player = new Player(this.map?.startAt!)
+        this.player = new Player(this.map?.startAt!, this.options.character)
         this.timer.start()
         this.arrow.show()
         this.arrow.checkRotation(this.player!.position, this.map?.finishAt!)
