@@ -6,7 +6,7 @@ const words = ref(localStorage.getItem('words') || [])
 export const useWords  = () => {
     const isWordFetched = computed(() => words.value.length);
     const fetchWords = async () => {
-        const result = await fetch('/words.json')
+        const result = await fetch(import.meta.env.VITE_BASE_URL+'/words.json')
         const json = await result.json()
         words.value = json
         console.log('Words fetched');
