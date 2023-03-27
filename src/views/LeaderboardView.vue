@@ -5,6 +5,7 @@ import { onMounted, ref } from 'vue';
 import * as scoreApi from '@/api/score'
 import IconLoader from '@/components/icons/IconLoader.vue';
 import type { Score } from '@/types/Score' 
+import { formatTime } from "@/utils/time"
 
 const mode = ref('lari')
 const map = ref('all')
@@ -32,6 +33,10 @@ const getScores = () => {
       loading.value = false
       alert("Error: "+err)
     })
+}
+
+const formatScore = (score: number) => {
+  return formatTime(score)
 }
 
 onMounted(() => {
@@ -74,7 +79,7 @@ onMounted(() => {
           <tr v-for="(leaderboard, i) in leaderboards" :key="i">
             <td class="text-center">{{ i+1 }}</td>
             <td class="px-3">{{ leaderboard.username }}</td>
-            <td>{{ leaderboard.score }}</td>
+            <td>{{ formatScore(leaderboard.score) }}</td>
           </tr>
         </tbody>
         
