@@ -1,6 +1,7 @@
 export type Score = {
     mode: string 
-    score: string 
+    score: number 
     map: string 
     username: string
+    created_at: string
 }

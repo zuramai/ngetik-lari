@@ -36,7 +36,8 @@ const getScores = () => {
 }
 
 const formatScore = (score: number) => {
-  return formatTime(score)
+  if(mode.value === 'lari') return formatTime(score)
+  return score
 }
 
 onMounted(() => {

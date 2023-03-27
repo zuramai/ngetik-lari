@@ -10,7 +10,7 @@ export const getScores = async (map: string, mode: string) => {
     return await query
 }
 
-export const getScoresFromUser = async (userId: number) => {
+export const getScoresFromUser = async (userId: string) => {
     return await supabase.from('scores').select('*').filter('user_id', 'eq', userId).order('created_at', { ascending: false })
 }
 

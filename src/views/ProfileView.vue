@@ -6,26 +6,26 @@ import * as scoreApi from '@/api/score'
 import IconLoader from '@/components/icons/IconLoader.vue';
 import type { Score } from '@/types/Score' 
 import { useAuth } from '@/composables/useAuth';
-import {formatDate} from '@/utils/date'
+import {formatDate,formatDateWithTime} from '@/utils/date'
+import { watch } from 'vue';
 
 const mode = ref('lari')
 const map = ref('all')
 const auth = useAuth()
-const leaderboards = ref<Score[]>([])
+const scores = ref<Omit<Score, 'username'>[]>([])
 const loading = ref(false)
 
 const getScores = () => {
   loading.value = true
-  scoreApi.getScores(map.value, mode.value)
+  scoreApi.getScoresFromUser(auth.currentUser.value?.id!)
     .then(data => {
       // Parse data
       
-      leaderboards.value = data.data?.map(key => {
+      scores.value = data.data?.map(key => {
         return {
           map: key.map,
           mode: key.mode,
           score: key.score,
-          username: key.metadata.username,
           created_at: key.created_at,
         }
       }) || []
@@ -37,14 +37,16 @@ const getScores = () => {
 }
 
 onMounted(() => {
-  getScores()
+  watch(() => auth.currentUser.value, () => {
+    getScores()
+  })
 })
 
 </script>
 <template>
   <div class="profile | w-full">
     <AppHeader></AppHeader>
-    <section class="mt-3 min-h-[500px] max-w-[350px] mx-auto">
+    <section class="mt-3 min-h-[500px] max-w-[450px] mx-auto">
       <div class="profile-data text-center mb-3" v-if="auth.currentUser.value">
         <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
           <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
@@ -56,10 +58,16 @@ onMounted(() => {
       <h3 class="mb-3">Latest Scores</h3>
         <table class="table table-border">
             <tr>
+              <th>Date</th>
                 <th>Mode</th>
                 <th>Map</th>
-                <th>Date</th>
                 <th>Score</th>
+            </tr>
+            <tr v-for="score in scores" :key='score.created_at' class='text-center'>
+              <td>{{ formatDateWithTime(score.created_at) }}</td>
+              <td>{{ score.mode }}</td>
+              <td>{{ score.map }}</td>
+              <td>{{ score.score }}</td>
             </tr>
         </table>
     </section>
