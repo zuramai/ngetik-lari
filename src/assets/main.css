@@ -34,3 +34,15 @@ a:hover {
 .invisible {
     visibility: hidden;
 }
+.direction-arrow {
+    position: absolute;
+    bottom: .5rem;
+    right: .5rem;
+    width: 3rem;
+}
+.hidden {
+    display: none;
+}
+.block {
+    display: block;
+}

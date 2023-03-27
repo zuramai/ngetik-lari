@@ -4,14 +4,17 @@ import { Player } from "./Player"
 import { MapDust } from "./maps/MapDust"
 import { MoveDirection, type Position } from "./types/Player"
 import type { Block } from "./Block"
+import { Direction } from "./Arrow"
 import { Timer } from "./Timer"
 import { watch } from "vue"
+import { Arrow } from "./Arrow"
 
 const words = useWords()
 
 export class Game {
     canvas: HTMLCanvasElement
     map: GameMap | null = null
+    arrow: Arrow
     ctx: CanvasRenderingContext2D
     player: Player|null = null
     currentlyTyping = ""
@@ -23,6 +26,7 @@ export class Game {
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas 
         this.ctx = canvas.getContext('2d')!
+        this.arrow = new Arrow(canvas)
         this.chooseMap()
         // this.start()
         
@@ -37,6 +41,7 @@ export class Game {
         this.map = new MapDust()
         this.player = new Player(this.map?.startAt!)
         this.timer.start()
+        this.arrow.show()
         requestAnimationFrame(() => this.render())
     }
 
@@ -115,11 +120,14 @@ export class Game {
 
         this.player!.position.row = nextRow
         this.player!.position.col = nextCol
+
         
     }
 
-    type(key: string)  {
+    type(e: KeyboardEvent)  {
+        const key = e.key
         if(key === 'Backspace') {
+            e.preventDefault()
             this.currentlyTyping = this.currentlyTyping.slice(0, -1)
             this.nextBlocks?.forEach(block => block.currentlyTyping = this.currentlyTyping)
 
@@ -162,6 +170,17 @@ export class Game {
 
     movePlayerTo(position: Position) {
         this.player!.position = position
+        
+        // Check direction to finish
+        const finishAt = this.map?.finishAt!
+        if(position.row < finishAt.row && position.col == finishAt.col) this.arrow.changeDirection(Direction.BOTTOM_CENTER)
+        else if(position.row < finishAt.row && position.col > finishAt.col) this.arrow.changeDirection(Direction.BOTTOM_LEFT)
+        else if(position.row < finishAt.row && position.col < finishAt.col) this.arrow.changeDirection(Direction.BOTTOM_RIGHT)
+        else if(position.row > finishAt.row && position.col < finishAt.col) this.arrow.changeDirection(Direction.TOP_RIGHT)
+        else if(position.row > finishAt.row && position.col == finishAt.col) this.arrow.changeDirection(Direction.TOP_CENTER)
+        else if(position.row > finishAt.row && position.col > finishAt.col) this.arrow.changeDirection(Direction.TOP_LEFT)
+        else if(position.row == finishAt.row && position.col < finishAt.col) this.arrow.changeDirection(Direction.RIGHT)
+        else if(position.row == finishAt.row && position.col > finishAt.col) this.arrow.changeDirection(Direction.LEFT)
 
         if(this.player!.position.col === this.map?.finishAt.col &&
             this.player!.position.row === this.map?.finishAt.row) {
@@ -178,9 +197,8 @@ export class Game {
             'ArrowDown': MoveDirection.DOWN,
         }
         if(Object.keys(directionMap).includes(e.key)) e.preventDefault()
-        console.log(e.key);
         
         if(directionMap[e.key]) this.move(directionMap[e.key])
-        else this.type(e.key)
+        else this.type(e)
     }
 }
