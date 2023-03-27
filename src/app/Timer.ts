@@ -1,9 +1,11 @@
+import { formatTime } from "@/utils/time"
+
 export class Timer {
     time = 0
     interval: NodeJS.Timer | null = null
 
     getTimeString() {
-        const timeString = `${Math.floor(this.time/60).toString().padStart(2,'0')}:${(this.time%60).toString().padStart(2,'0')}`
+        const timeString = `${formatTime(this.time)}`
         return timeString
     }
 
