@@ -5,6 +5,7 @@ import { MapDust } from "./maps/MapDust"
 import { MoveDirection, type Position } from "./types/Player"
 import type { Block } from "./Block"
 import { Timer } from "./Timer"
+import { watch } from "vue"
 
 const words = useWords()
 
@@ -30,10 +31,10 @@ export class Game {
 
     chooseMap() {
         // Auto choose
-        this.map = new MapDust()
     }
 
     start() {
+        this.map = new MapDust()
         this.player = new Player(this.map?.startAt!)
         this.timer.start()
         requestAnimationFrame(() => this.render())

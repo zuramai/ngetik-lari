@@ -8,11 +8,13 @@ import { useAuth } from '@/composables/useAuth'
 import RegisterModal from '@/components/auth/RegisterModal.vue';
 import * as scoreApi from '@/api/score'
 import IconLoader from '@/components/icons/IconLoader.vue';
+import {useWords} from '@/composables/useWords'
 
 
 const auth = useAuth()
 const canvas = ref()
 const game = ref<Game>()
+const words = useWords()
 
 const showHomeScreen = ref(true)
 const finishTime = ref("00:00")
@@ -41,7 +43,8 @@ const restart = () => {
   finishModalOpen.value = false 
 }
 
-const startGame = () => {
+const startGame = async () => {
+  await words.fetchWords()
   game.value?.start()
   showHomeScreen.value = false
 }

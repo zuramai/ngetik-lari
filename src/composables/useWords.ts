@@ -1,28 +1,24 @@
 import { randomArray } from "@/app/utils/array"
-import { onMounted, ref } from "vue"
+import { computed, onMounted, ref } from "vue"
 
 const words = ref(localStorage.getItem('words') || [])
 
 export const useWords  = () => {
-
+    const isWordFetched = computed(() => words.value.length);
     const fetchWords = async () => {
-        fetch('/words.json')
-            .then(res => res.json())
-            .then(res => {
-                console.log('Words fetched');
-                words.value = res
-            })
+        const result = await fetch('/words.json')
+        const json = await result.json()
+        words.value = json
+        console.log('Words fetched');
     }
 
-    if(words.value.length === 0) {
-        fetchWords()
-    } 
     
     const randomWord =  () => {
         return randomArray(words.value as string[])
     }
 
     return {
+        isWordFetched,
         fetchWords,
         randomWord
     }
