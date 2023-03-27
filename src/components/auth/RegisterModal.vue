@@ -3,6 +3,7 @@ import { reactive, ref } from 'vue';
 import FormInput from '../forms/FormInput.vue';
 import ModalDialog from '../ModalDialog.vue';
 import { useAuth } from '@/composables/useAuth'
+import IconLoader from '../icons/IconLoader.vue';
 
 const auth = useAuth();
 
