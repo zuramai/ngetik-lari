@@ -3,6 +3,7 @@ export const getScores = async (map: string, mode: string) => {
     const query = supabase.from('leaderboard')
         .select('*')
         .filter('mode', 'eq', mode)
+        .order('score', {ascending: true})
         .limit(10)
     if(map !== 'all') {
         query.filter('map', 'eq', map)
