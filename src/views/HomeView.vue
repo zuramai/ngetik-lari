@@ -118,10 +118,10 @@ onUnmounted(() => {
 </template>
 
 <style>
-.logo {
+.logo h1 {
     background: linear-gradient(to bottom, orange, red);
     -webkit-text-fill-color: transparent;
-    background-clip: text;
+    -webkit-background-clip: text;
 }
 .game-home {
   background-color: #faca96;
