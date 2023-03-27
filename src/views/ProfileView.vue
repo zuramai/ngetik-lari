@@ -8,6 +8,7 @@ import type { Score } from '@/types/Score'
 import { useAuth } from '@/composables/useAuth';
 import {formatDate,formatDateWithTime} from '@/utils/date'
 import { watch } from 'vue';
+import { formatTime } from '@/utils/time';
 
 const mode = ref('lari')
 const map = ref('all')
@@ -67,7 +68,7 @@ onMounted(() => {
               <td>{{ formatDateWithTime(score.created_at) }}</td>
               <td>{{ score.mode }}</td>
               <td>{{ score.map }}</td>
-              <td>{{ score.score }}</td>
+              <td>{{ formatTime(score.score) }}</td>
             </tr>
         </table>
     </section>
