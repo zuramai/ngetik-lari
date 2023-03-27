@@ -24,7 +24,7 @@ export default defineConfig({
         'btn-disabled': '',
         'text-link': 'text-orange-500 underline',
         'alert': 'px-3 py-2 bg-red-500 bg-opacity-30 mb-2 rounded-md',
-        'table': 'w-full'
+        'table': 'w-full',
       },
       presets: [
         presetMini(),

@@ -13,6 +13,11 @@ const router = createRouter({
       path: '/leaderboard',
       name: 'Leaderboard',
       component: () => import('../views/LeaderboardView.vue')
+    },
+    {
+      path: '/profile',
+      name: 'Profile',
+      component: () => import('../views/ProfileView.vue')
     }
   ]
 })
